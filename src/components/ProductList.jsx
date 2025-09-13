@@ -1,12 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ProductCard } from "./ProductCard";
 import { products } from "@/data/data-products";
 
 export const ProductList = () => {
   const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  useEffect(() => {
+    setCart(JSON.parse(localStorage.getItem("cart")) || []);
+  }, []);
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      const sum = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+      setTotalPrice(sum);
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart]);
+
+  // useRef
+  // const cartRef = useRef(JSON.parse(localStorage.getItem("cart")) || []);
+
+  // const handleAddToCartRef = (product) => {
+  //   cartRef.current = [
+  //     ...cartRef.current,
+  //     {
+  //       id: product.id,
+  //       name: product.name,
+  //       price: product.price,
+  //       qty: 1,
+  //       total: product.price,
+  //     },
+  //   ];
+  //   localStorage.setItem("cart", JSON.stringify(cartRef.current));
+  // };
+
+  const totalPriceRef = useRef(null);
+
+ useEffect(() => {
+  if(cart.length > 0) {
+    totalPriceRef.current.style.display = "";
+  } else {
+    totalPriceRef.current.style.display = "none";
+  }
+ }, [cart]);
+  
 
   const handleAddToCart = (product) => {
-    console.log("Adding:", product); // cek kalau function terpanggil
+    console.log("Adding:", product);
 
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
@@ -40,59 +80,71 @@ export const ProductList = () => {
 
   return (
     <>
-    <div className="w-full mx-5 my-20 md:w-[90%]">
-      {/* Product List */}
-      <div
-        className="grid 
+      <div className="w-full mx-5 my-20 md:w-[90%]">
+        {/* Product List */}
+        <div
+          className="grid 
       gap-5 
       sm:grid-cols-2 
       md:grid-cols-2 
       lg:grid-cols-4"
-      >
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            handleAddToCart={handleAddToCart}
-          />
-        ))}
-      {/* Cart Table */}
-      <div className="mx-20 md:mx-5">
-        <h1 className="text-3xl font-bold text-amber-200 mb-3">Cart</h1>
-        <table className="w-full border-collapse border border-gray-300 text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border border-gray-300 p-2">Name</th>
-              <th className="border border-gray-300 p-2">Price</th>
-              <th className="border border-gray-300 p-2">Qty</th>
-              <th className="border border-gray-300 p-2">Total</th>
-              <th className="border border-gray-300 p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {cart.map((item) => (
-              <tr key={item.id}>
-                <td className="border border-gray-300 p-2">{item.name}</td>
-                <td className="border border-gray-300 p-2">${item.price}</td>
-                <td className="border border-gray-300 p-2">{item.qty}</td>
-                <td className="border border-gray-300 p-2">
-                  ${item.total.toFixed(2)}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  <button
-                    onClick={() => handleDeleteFromCart(item.id)}
-                    className=" bg-red-500 text-slate-50 px-3 py-1 rounded"
+        >
+          {products.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              handleAddToCart={handleAddToCart}
+            />
+          ))}
+          {/* Cart Table */}
+          <div className="mx-20 md:mx-5">
+            <h1 className="text-3xl font-bold text-amber-500 mb-3">Cart</h1>
+            <table className="w-full border-collapse border border-gray-300 text-sm">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="border border-gray-300 p-2">Name</th>
+                  <th className="border border-gray-300 p-2">Price</th>
+                  <th className="border border-gray-300 p-2">Qty</th>
+                  <th className="border border-gray-300 p-2">Total</th>
+                  <th className="border border-gray-300 p-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cart.map((item) => (
+                  <tr key={item.id}>
+                    <td className="border border-gray-300 p-2">{item.name}</td>
+                    <td className="border border-gray-300 p-2">
+                      ${item.price}
+                    </td>
+                    <td className="border border-gray-300 p-2">{item.qty}</td>
+                    <td className="border border-gray-300 p-2">
+                      ${item.total.toFixed(2)}
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      <button
+                        onClick={() => handleDeleteFromCart(item.id)}
+                        className=" bg-red-500 text-slate-50 px-3 py-1 rounded"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr ref={totalPriceRef}>
+                  <td
+                    className="border border-gray-300 text-center p-2"
+                    colSpan={5}
                   >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    <b>Total Price:</b> ${totalPrice.toFixed(2)}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
     </>
   );
 };

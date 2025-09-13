@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
 
 export function LoginForm({ className, ...props }) {
   const handelLogin = (event) => {
@@ -18,6 +19,14 @@ export function LoginForm({ className, ...props }) {
     localStorage.setItem("password", event.target.password.value);
     window.location.href = "/";
   };
+
+  // Ketika login cursor langsung ke halaman input
+  const emailRef = useRef(null);
+
+  useEffect(() => {
+    emailRef.current.focus();
+  }, [])
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -37,6 +46,7 @@ export function LoginForm({ className, ...props }) {
                   type="email"
                   placeholder="m@example.com"
                   required
+                  ref={emailRef}
                 />
               </div>
               <div className="grid gap-3">
