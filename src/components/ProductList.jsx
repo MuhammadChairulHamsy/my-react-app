@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ProductCard } from "./ProductCard";
-import { products } from "@/data/data-products";
+import { getProducts } from "@/services/product.service";
 
 export const ProductList = () => {
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [products, setProducts] = useState([]);
+
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
   }, []);
@@ -15,7 +17,7 @@ export const ProductList = () => {
       setTotalPrice(sum);
       localStorage.setItem("cart", JSON.stringify(cart));
     }
-  }, [cart]);
+  }, [cart, products]);
 
   // useRef
   // const cartRef = useRef(JSON.parse(localStorage.getItem("cart")) || []);
@@ -34,37 +36,38 @@ export const ProductList = () => {
   //   localStorage.setItem("cart", JSON.stringify(cartRef.current));
   // };
 
+  useEffect(() => {
+    getProducts((data) => {
+      setProducts(data);
+    });
+  }, []);
+
   const totalPriceRef = useRef(null);
 
- useEffect(() => {
-  if(cart.length > 0) {
-    totalPriceRef.current.style.display = "";
-  } else {
-    totalPriceRef.current.style.display = "none";
-  }
- }, [cart]);
-  
+  useEffect(() => {
+    if (products.length > 0 && cart.length > 0) {
+      totalPriceRef.current.style.display = "";
+    } else {
+      totalPriceRef.current.style.display = "none";
+    }
+  }, [cart]);
 
   const handleAddToCart = (product) => {
-    console.log("Adding:", product);
-
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
 
       if (existingItem) {
-        // kalau sudah ada → qty +1
         return prevCart.map((item) =>
           item.id === product.id
             ? { ...item, qty: item.qty + 1, total: (item.qty + 1) * item.price }
             : item
         );
       } else {
-        // kalau belum ada → tambahkan item baru
         return [
           ...prevCart,
           {
             id: product.id,
-            name: product.name,
+            title: product.title, 
             price: product.price,
             qty: 1,
             total: product.price,
@@ -80,39 +83,42 @@ export const ProductList = () => {
 
   return (
     <>
-      <div className="w-full mx-5 my-20 md:w-[90%]">
-        {/* Product List */}
-        <div
-          className="grid 
-      gap-5 
-      sm:grid-cols-2 
-      md:grid-cols-2 
-      lg:grid-cols-4"
-        >
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              handleAddToCart={handleAddToCart}
-            />
-          ))}
-          {/* Cart Table */}
-          <div className="mx-20 md:mx-5">
+      <div className="w-full mx-5 my-20 md:w-[95%]">
+        {/* Bungkus utama dengan flex untuk kiri-kanan */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* --- Kiri: Product List --- */}
+          <div className="flex-1">
+            <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+              {products.length > 0 &&
+                products.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    handleAddToCart={handleAddToCart}
+                  />
+                ))}
+            </div>
+          </div>
+
+          {/* --- Kanan: Cart Table --- */}
+          <div className="w-full lg:w-1/3">
             <h1 className="text-3xl font-bold text-amber-500 mb-3">Cart</h1>
-            <table className="w-full border-collapse border border-gray-300 text-sm">
+            <table className="table-fixed w-full border-collapse border border-gray-300 text-sm">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="border border-gray-300 p-2">Name</th>
-                  <th className="border border-gray-300 p-2">Price</th>
-                  <th className="border border-gray-300 p-2">Qty</th>
-                  <th className="border border-gray-300 p-2">Total</th>
-                  <th className="border border-gray-300 p-2">Action</th>
+                  <th className="w-1/4 border border-gray-300 p-1">Nama</th>
+                  <th className="w-1/6 border border-gray-300 p-1">Price</th>
+                  <th className="w-1/6 border border-gray-300 p-1">Qty</th>
+                  <th className="w-1/4 border border-gray-300 p-1">Total</th>
+                  <th className="w-1/6 border border-gray-300 p-1">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {cart.map((item) => (
                   <tr key={item.id}>
-                    <td className="border border-gray-300 p-2">{item.name}</td>
+                    <td className="border border-gray-300 p-2 truncate">
+                      {item.title}
+                    </td>
                     <td className="border border-gray-300 p-2">
                       ${item.price}
                     </td>
@@ -123,7 +129,7 @@ export const ProductList = () => {
                     <td className="border border-gray-300 p-2">
                       <button
                         onClick={() => handleDeleteFromCart(item.id)}
-                        className=" bg-red-500 text-slate-50 px-3 py-1 rounded"
+                        className="bg-red-500 text-white px-3 py-1 rounded"
                       >
                         Delete
                       </button>
@@ -131,6 +137,7 @@ export const ProductList = () => {
                   </tr>
                 ))}
               </tbody>
+
               <tfoot>
                 <tr ref={totalPriceRef}>
                   <td

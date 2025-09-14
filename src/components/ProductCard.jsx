@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Heart, ShoppingCart, Star, Eye, Zap } from "lucide-react";
+import { Heart, ShoppingCart, Eye } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -8,6 +8,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 export const ProductCard = ({ product, handleAddToCart }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -25,7 +26,7 @@ export const ProductCard = ({ product, handleAddToCart }) => {
         className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm hover:bg-white rounded-full p-2.5 transition-all duration-300 z-20 shadow-lg hover:shadow-xl hover:scale-110"
       >
         <Heart
-          className={`h-5 w-5 transition-all duration-300 ${
+          className={`h-5 w-5 transition-all duration-300 cursor-pointer ${
             isLiked
               ? "fill-red-500 text-red-500 scale-110"
               : "text-gray-600 hover:text-red-500 hover:scale-110"
@@ -38,8 +39,8 @@ export const ProductCard = ({ product, handleAddToCart }) => {
         <div className="relative overflow-hidden">
           <img
             src={product.image}
-            alt={product.name}
-            className="w-full h-[24.5rem] object-cover transition-all duration-700 group-hover:scale-110"
+            alt={product.title}
+            className="w-full h-60 object-cover transition-all duration-700 group-hover:scale-110"
           />
           {/* Hover overlay */}
           <div
@@ -48,12 +49,18 @@ export const ProductCard = ({ product, handleAddToCart }) => {
             }`}
           >
             <div className="flex gap-3">
-              <button className="bg-white/90 text-gray-800 p-3 rounded-full hover:bg-slate-50 transition-all duration-200 hover:scale-110 shadow-lg">
+              <Link
+                to={`/products/${product.id}`}
+                aria-label={`Lihat detail ${product.title}`}
+                className="bg-white/90 text-gray-800 p-3 rounded-full
+             hover:bg-slate-50 transition-all duration-200
+             hover:scale-110 shadow-lg flex items-center justify-center"
+              >
                 <Eye className="h-5 w-5" />
-              </button>
+              </Link>
               <button
-                className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-all duration-200 hover:scale-110 shadow-lg"
-                onClick={() => handleAddToCart(product)} // ✅ aktif
+                className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-all duration-200 hover:scale-110 shadow-lg cursor-pointer"
+                onClick={() => handleAddToCart(product)}
               >
                 <ShoppingCart className="h-5 w-5" />
               </button>
@@ -65,10 +72,14 @@ export const ProductCard = ({ product, handleAddToCart }) => {
       {/* Info */}
       <CardHeader className="pb-3">
         <CardTitle className="text-xl font-bold text-gray-800 mb-2">
-          {product.name}
+          {product.title.length > 100
+            ? product.title.substring(0, 20) + "..."
+            : product.title}
         </CardTitle>
         <CardDescription className="text-gray-600 text-sm mb-4">
-          {product.description}
+          {product.description.length > 100
+            ? product.description.substring(0, 100) + "..."
+            : product.description}
         </CardDescription>
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl font-bold text-gray-800">
@@ -91,8 +102,7 @@ export const ProductCard = ({ product, handleAddToCart }) => {
               py-3 px-4 rounded-lg transition-all duration-200 
               flex items-center justify-center gap-2 shadow-lg 
               hover:shadow-xl hover:scale-[1.02] 
-              cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!product.inStock}
+              cursor-pointer"
             onClick={() => handleAddToCart(product)} // ✅ aktif
           >
             <ShoppingCart className="h-4 w-4" />

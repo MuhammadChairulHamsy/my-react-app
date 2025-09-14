@@ -1,7 +1,7 @@
 import { ProductList } from "@/components/ProductList";
 import Header from "@/layout/Header";
 
-export const Products = () => {
+export const ProductsPage = () => {
     return(
         <>
             <Header/>
