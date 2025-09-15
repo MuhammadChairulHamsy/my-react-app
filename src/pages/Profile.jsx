@@ -1,6 +1,6 @@
 import { useLogin } from "@/hooks/useLogin";
 
-const ProfilePage = () => {
+export const ProfilePage = () => {
   const username = useLogin();
   return (
     <div>
@@ -9,5 +9,3 @@ const ProfilePage = () => {
     </div>
   );
 };
-
-export default ProfilePage;

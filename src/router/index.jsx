@@ -1,11 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
-import NotFound from "@/pages/NotFound";
+import { NotFound } from "@/pages/NotFound";
 import { ProductsPage } from "@/pages/products";
-import HomePage from "@/pages/Home";
-import ProfilePage from "@/pages/Profile";
-import DetailProductPage from "@/pages/DetailProduct";
+import { HomePage } from "@/pages/Home";
+import { ProfilePage } from "@/pages/Profile";
+import { DetailProductPage } from "@/pages/DetailProduct";
 
 export const router = createBrowserRouter([
   {
@@ -27,10 +27,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: <ProfilePage/>
+    element: <ProfilePage />,
   },
   {
     path: "/products/:id",
-    element: <DetailProductPage/>
-  }
+    element: <DetailProductPage />
+  },
 ]);

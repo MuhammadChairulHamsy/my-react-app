@@ -2,7 +2,7 @@ import { ShoppingBasket } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/layout/Header";
 
-function HomePage() {
+export const HomePage = () => {
   return (
     <>
       <Header/>
@@ -33,4 +33,3 @@ function HomePage() {
   );
 }
 
-export default HomePage;

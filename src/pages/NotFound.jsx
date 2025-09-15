@@ -1,6 +1,6 @@
 import { useRouteError } from "react-router-dom";
 
-const NotFound = () => {
+export const NotFound = () => {
   const error = useRouteError();
 
   return (
@@ -67,4 +67,3 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
