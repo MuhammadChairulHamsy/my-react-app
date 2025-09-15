@@ -9,10 +9,13 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
 
 export const ProductCard = ({ product, handleAddToCart }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <Card
@@ -60,7 +63,17 @@ export const ProductCard = ({ product, handleAddToCart }) => {
               </Link>
               <button
                 className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-all duration-200 hover:scale-110 shadow-lg cursor-pointer"
-                onClick={() => handleAddToCart(product)}
+                onClick={() =>
+                  dispatch(
+                    addToCart({
+                      id: product.id,
+                      title: product.title,
+                      price: product.price,
+                      qty: 1,
+                      total: product.price,
+                    })
+                  )
+                }
               >
                 <ShoppingCart className="h-5 w-5" />
               </button>
@@ -103,7 +116,17 @@ export const ProductCard = ({ product, handleAddToCart }) => {
               flex items-center justify-center gap-2 shadow-lg 
               hover:shadow-xl hover:scale-[1.02] 
               cursor-pointer"
-            onClick={() => handleAddToCart(product)} // ✅ aktif
+            onClick={() =>
+              dispatch(
+                addToCart({
+                  id: product.id,
+                  title: product.title,
+                  price: product.price,
+                  qty: 1,
+                  total: product.price,
+                })
+              )
+            }
           >
             <ShoppingCart className="h-4 w-4" />
             Add to Cart

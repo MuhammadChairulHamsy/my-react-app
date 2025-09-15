@@ -1,6 +1,6 @@
 import { useLogin } from "@/hooks/useLogin";
 
-const Header = () => {
+export const Header = () => {
   const username = useLogin();
 
   const handleLogout = () => {
@@ -23,5 +23,3 @@ const Header = () => {
     </header>
   );
 };
-
-export default Header;
