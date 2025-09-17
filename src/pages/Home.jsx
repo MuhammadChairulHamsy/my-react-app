@@ -1,12 +1,10 @@
 import { ShoppingBasket } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Header } from "@/layout/Header";
 import BannerSlider from "@/components/BannerSlider";
 
 export const HomePage = () => {
   return (
     <>
-      <Header />
       <main className="my-20">
         {/* Banner Slider */}
          <BannerSlider />

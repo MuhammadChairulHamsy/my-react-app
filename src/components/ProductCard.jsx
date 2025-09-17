@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "@/redux/slices/cartSlice";
 
-export const ProductCard = ({ product, handleAddToCart }) => {
+export const ProductCard = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const dispatch = useDispatch();
