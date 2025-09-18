@@ -1,12 +1,19 @@
+// components/Header.jsx
 import { useLogin } from "@/hooks/useLogin";
-import { ShoppingCart, User, LogOut } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ShoppingCart, User, LogOut, Moon, Sun } from "lucide-react";
+import { useEffect, useState, useContext } from "react";
 import { useSelector } from "react-redux";
+import DarkModeContext from "@/context/DarkMode";
+import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const [totalCart, setTotalCart] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const cart = useSelector((state) => state.cart.data);
+
+  const context = useContext(DarkModeContext);
+
+  const { isDarkMode, toggleDarkMode } = context;
 
   useEffect(() => {
     const sum = cart.reduce((acc, item) => {
@@ -29,6 +36,10 @@ export const Header = () => {
     window.location.href = "/login";
   };
 
+  const handleToggle = () => {
+    toggleDarkMode();
+  };
+
   return (
     <header className="bg-gradient-to-r from-amber-300 via-amber-400 to-orange-400 shadow-lg">
       <div className="container mx-auto px-6 py-4">
@@ -42,12 +53,29 @@ export const Header = () => {
 
           {/* User Actions Section */}
           <div className="flex items-center gap-6">
+            {/* Dark Mode Toggle */}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleToggle}
+              className={`rounded-full shadow-lg transition-all duration-300 hover:scale-105 ${
+                isDarkMode
+                  ? "bg-gray-700/80 backdrop-blur-sm border-gray-600 text-yellow-400 hover:bg-gray-600/80 hover:text-yellow-300"
+                  : "bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30 hover:text-white"
+              }`}
+            >
+              {isDarkMode ? (
+                <Sun className="h-4 w-4 transition-transform duration-300 hover:rotate-180" />
+              ) : (
+                <Moon className="h-4 w-4 transition-transform duration-300 hover:-rotate-12" />
+              )}
+            </Button>
+
             {/* User Info */}
             <div className="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white">
               <User className="w-4 h-4" />
               <span className="font-semibold text-sm">Halo, {username}</span>
             </div>
-
             {/* Shopping Cart */}
             <div className="relative group">
               <div
@@ -74,11 +102,21 @@ export const Header = () => {
               </div>
 
               {/* Hover Tooltip */}
-              <div className="absolute right-0 top-full mt-2 bg-gray-800 text-white px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20">
+              <div
+                className={`absolute right-0 top-full mt-2 px-3 py-1 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 ${
+                  isDarkMode
+                    ? "bg-gray-700 text-gray-200"
+                    : "bg-gray-800 text-white"
+                }`}
+              >
                 {totalCart === 0
                   ? "Keranjang kosong"
                   : `${totalCart} item dalam keranjang`}
-                <div className="absolute -top-1 right-4 w-2 h-2 bg-gray-800 rotate-45"></div>
+                <div
+                  className={`absolute -top-1 right-4 w-2 h-2 rotate-45 ${
+                    isDarkMode ? "bg-gray-700" : "bg-gray-800"
+                  }`}
+                ></div>
               </div>
             </div>
 

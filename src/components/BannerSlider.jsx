@@ -30,9 +30,9 @@ export default function BannerSlider() {
   }, []);
 
   return (
-    <section className="relative w-[80rem] h-[25rem] mx-auto overflow-hidden rounded-2xl">
+    <section className=" relative w-[80rem] h-[25rem] mx-auto overflow-hidden rounded-2xl">
       <div
-        className="flex transition-transform duration-700 ease-in-out"
+        className="flex my-20 transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {banners.map((src, i) => (
